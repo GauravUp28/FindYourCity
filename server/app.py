@@ -1,3 +1,9 @@
+from pathlib import Path
+from dotenv import load_dotenv
+
+# Load server/.env BEFORE any other imports read env vars
+load_dotenv(dotenv_path=Path(__file__).with_name(".env"), override=True, encoding="utf-8")
+
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
@@ -18,7 +24,6 @@ app.add_middleware(
 store = RoundStore(ttl_seconds=20 * 60)  # 20 min TTL
 
 class NewRoundRequest(BaseModel):
-    # reserved for future: difficulty, region filters, etc.
     pass
 
 class NewRoundResponse(BaseModel):
@@ -28,6 +33,7 @@ class NewRoundResponse(BaseModel):
     hints: Dict[str, Any]
     mapDefault: Dict[str, Any]
     maxScore: int = 5000
+    aiEmbellished: bool = False
 
 class GuessRequest(BaseModel):
     lat: float = Field(..., ge=-90, le=90)
@@ -53,6 +59,7 @@ def new_round(_: NewRoundRequest | None = None):
         monologue=bundle["monologue"],
         hints=bundle["hints"],
         mapDefault=bundle["mapDefault"],
+        aiEmbellished=bundle.get("ai", False),
     )
 
 @app.post("/api/round/{round_id}/guess", response_model=GuessResponse)

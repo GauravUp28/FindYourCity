@@ -33,8 +33,7 @@ Open `http://localhost:5173`
 1. Click **New Round** to receive a character and story clues.
 2. Click on the map to place your **guess** (you can drag the marker).
 3. Hit **Submit Guess** to see your **distance** and **score** (0–5000).
-4. Click **Reveal** to see the correct location and a line from your guess.
-5. Play another round!
+4. Play another round!
 
 ### Scoring
 We use a smooth exponential curve based on great-circle distance (Haversine):
