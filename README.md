@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # FindMyCity
 **FindMyCity** is an interactive, AI-flavored geography guessing game. Players read a fictional character's clues and habits, then drop a pin on the map to guess where they live. Think *GeoGuessr* meets *AI storytelling*.
 
@@ -87,3 +88,6 @@ FindMyCity/
 - Map tiles: OpenStreetMap. Please respect their usage policy for heavy use.
 - The backend stores round answers in memory with a short TTL. For multi-instance or persistent play, swap `store.py` with Redis/Postgres.
 - This is a starter; extend the dataset, add difficulty tiers, streaks, and leaderboards!
+=======
+# FindMyCity
+>>>>>>> cc87f19442d6e5ba5ea0df762f378a7ffd1e5068
