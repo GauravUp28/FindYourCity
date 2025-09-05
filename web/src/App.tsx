@@ -55,7 +55,9 @@ export default function App() {
 
       <header className="container">
         <h1>FindYourCity</h1>
-        <p className="tagline">AI-flavored geography guessing: read the clues, drop a pin, score big.</p>
+        <p className="tagline">
+          🗺️ Decode the story, drop your pin, test your world sense.
+        </p>
       </header>
 
       <main className={`container ${anyLoading ? 'is-busy' : ''}`}>

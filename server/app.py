@@ -15,7 +15,7 @@ app = FastAPI(title="FindYourCity API", version="0.1.1")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["https://findyourcity.vercel.app/"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
