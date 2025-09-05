@@ -1,0 +1,32 @@
+# --- Python / FastAPI backend ---
+server/__pycache__/
+server/*.pyc
+server/*.pyo
+server/.pytest_cache/
+server/.mypy_cache/
+server/.coverage
+server/.env        # <--- IMPORTANT: never commit secrets
+server/.venv/
+
+# --- Node / React frontend ---
+web/node_modules/
+web/.parcel-cache/
+web/.next/
+web/.nuxt/
+web/.turbo/
+web/dist/
+web/build/
+
+# --- Logs & temp ---
+*.log
+*.sqlite3
+.DS_Store
+Thumbs.db
+
+# --- Editor / IDE ---
+.vscode/
+.idea/
+*.swp
+
+# --- OS junk ---
+ehthumbs.db
