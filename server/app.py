@@ -15,10 +15,15 @@ app = FastAPI(title="FindYourCity API", version="0.1.1")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://findyourcity.vercel.app/"],
+    allow_origins=[
+        "http://localhost:5173",                 # local dev
+        "https://findyourcity.vercel.app",       # your Vercel prod domain
+    ],
+    allow_origin_regex=r"https://.*\.vercel\.app",  # allow Vercel preview URLs
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "OPTIONS"],
     allow_headers=["*"],
+    max_age=600,
 )
 
 store = RoundStore(ttl_seconds=20 * 60)  # 20 min TTL
