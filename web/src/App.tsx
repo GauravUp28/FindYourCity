@@ -54,7 +54,7 @@ export default function App() {
       )}
 
       <header className="container">
-        <h1>GeoPersona</h1>
+        <h1>FindMyCity</h1>
         <p className="tagline">AI-flavored geography guessing: read the clues, drop a pin, score big.</p>
       </header>
 
@@ -117,7 +117,7 @@ export default function App() {
       </main>
 
       <footer className="container footer">
-        <span>© GeoPersona • Built with FastAPI, React & Leaflet</span>
+        <span>© FindMyCity • Built with FastAPI, React & Leaflet</span>
       </footer>
     </div>
   )
