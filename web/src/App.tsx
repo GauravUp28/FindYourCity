@@ -54,7 +54,7 @@ export default function App() {
       )}
 
       <header className="container">
-        <h1>FindMyCity</h1>
+        <h1>FindYourCity</h1>
         <p className="tagline">AI-flavored geography guessing: read the clues, drop a pin, score big.</p>
       </header>
 
@@ -64,7 +64,6 @@ export default function App() {
         {round && (
           <div className="panel">
             <div className="clue">
-              <h2>Meet <span className="accent">{round.character}</span></h2>
               <p className={`mono ${roundLoading ? 'skeleton' : ''}`}>{round.monologue}</p>
 
               <div className="chips">
@@ -117,7 +116,7 @@ export default function App() {
       </main>
 
       <footer className="container footer">
-        <span>© FindMyCity • Built with FastAPI, React & Leaflet</span>
+        <span>© FindYourCity • Built with FastAPI, React & Leaflet</span>
       </footer>
     </div>
   )

@@ -11,7 +11,7 @@ from typing import Dict, Any
 from .store import RoundStore
 from .story import pick_place, evaluate_guess
 
-app = FastAPI(title="FindMyCity API", version="0.1.0")
+app = FastAPI(title="FindYourCity API", version="0.1.1")
 
 app.add_middleware(
     CORSMiddleware,

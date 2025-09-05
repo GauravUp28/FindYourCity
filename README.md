@@ -1,5 +1,5 @@
-# FindMyCity
-**FindMyCity** is an interactive, AI-flavored geography guessing game. Players read a fictional character's clues and habits, then drop a pin on the map to guess where they live. 
+# FindYourCity
+**FindYourCity** is an interactive, AI-flavored geography guessing game. Players read a fictional character's clues and habits, then drop a pin on the map to guess where they live. 
 
 Tech: **FastAPI (Python)** backend + **React + Vite + Leaflet** frontend.
 
@@ -45,7 +45,7 @@ Closer = more points; ~0 km ≈ 5000 pts; ~2000 km ≈ 1839 pts; ~5000 km ≈ 41
 ---
 
 ## Optional: Bring your own LLM
-By default, FindMyCity assembles fun, varied clues locally (no external calls).
+By default, FindYourCity assembles fun, varied clues locally (no external calls).
 If you set `OPENAI_API_KEY` in the backend environment, the story generator will ask an LLM to “embellish” the clue text for richer personas.
 
 ```bash
@@ -57,7 +57,7 @@ uvicorn app:app --reload
 
 ## Project Structure
 ```
-FindMyCity/
+FindYourCity/
 ├─ server/            # FastAPI backend
 │  ├─ app.py          # API routes, CORS, scoring
 │  ├─ story.py        # persona + clue generation (local + optional LLM)

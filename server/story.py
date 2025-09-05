@@ -116,7 +116,6 @@ def _pick_from_local() -> Dict[str, Any]:
 def build_ai_prompt(avoid_cities: list[str], nudge_region: Optional[str]) -> str:
     avoid_block = ""
     if avoid_cities:
-        # Pass last few answers so the model steers away
         formatted = ", ".join(avoid_cities[:12])
         avoid_block = f"\n- Do NOT pick any of these recent answers: {formatted}"
 
@@ -130,7 +129,8 @@ def build_ai_prompt(avoid_cities: list[str], nudge_region: Optional[str]) -> str
         f"{region_block}"
         f"{avoid_block}\n"
         "- Provide accurate lat and lon.\n"
-        "- Write a 2-sentence FIRST-PERSON traveler monologue that hints at the city WITHOUT naming it.\n"
+        "- Write a 2-sentence DAILY-ROUTINE description addressing the player in SECOND PERSON (start with 'You ...'). "
+        "It must not include names, 'I', or self-introductions. Hints only; do NOT name the city/country.\n"
         "- Include keys: city, country, lat, lon, region, character, monologue, hints {cuisine, habits, vibes}.\n"
         "- Each hints list up to 2–3 items; TOTAL hints across all categories ≤ 5.\n"
         "- Output JSON ONLY."
