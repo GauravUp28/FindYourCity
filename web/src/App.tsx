@@ -1,3 +1,4 @@
+// at top with other imports
 import React, { useEffect, useState } from 'react'
 import { newRound, submitGuess } from './api'
 import { NewRound, GuessResult } from './types'
@@ -7,16 +8,20 @@ export default function App() {
   const [round, setRound] = useState<NewRound | null>(null)
   const [guess, setGuess] = useState<{ lat: number, lon: number } | null>(null)
   const [result, setResult] = useState<GuessResult | null>(null)
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false)           // submit-guess loading
+  const [roundLoading, setRoundLoading] = useState(false) // NEW: new-round loading
   const [error, setError] = useState<string | null>(null)
 
   const startRound = async () => {
     setError(null); setResult(null); setGuess(null)
+    setRoundLoading(true)              // <-- start overlay
     try {
       const r = await newRound()
       setRound(r)
     } catch (e: any) {
       setError(e?.message ?? 'Failed to start a round.')
+    } finally {
+      setRoundLoading(false)           // <-- stop overlay
     }
   }
 
@@ -35,21 +40,33 @@ export default function App() {
 
   useEffect(() => { startRound() }, [])
 
+  const anyLoading = roundLoading || loading
+
   return (
     <div className="app">
+      {/* Loading overlay */}
+      {roundLoading && (
+        <div className="loading-overlay" role="status" aria-live="polite">
+          <div className="loader-spinner" />
+          <div className="loader-text">Spinning up a new persona…</div>
+          <div className="loader-sub">crafting clues & habits</div>
+        </div>
+      )}
+
       <header className="container">
-        <h1>FindMyCity</h1>
+        <h1>GeoPersona</h1>
         <p className="tagline">AI-flavored geography guessing: read the clues, drop a pin, score big.</p>
       </header>
 
-      <main className="container">
-        {!round && <p>Loading…</p>}
+      <main className={`container ${anyLoading ? 'is-busy' : ''}`}>
+        {!round && !roundLoading && <p>Loading…</p>}
 
         {round && (
           <div className="panel">
             <div className="clue">
               <h2>Meet <span className="accent">{round.character}</span></h2>
-              <p className="mono">{round.monologue}</p>
+              <p className={`mono ${roundLoading ? 'skeleton' : ''}`}>{round.monologue}</p>
+
               <div className="chips">
                 <span>Hints:</span>
                 {round.hints.cuisine.map((c, i) => (<span className="chip" key={i}>{c}</span>))}
@@ -63,12 +80,25 @@ export default function App() {
               defaultZoom={round.mapDefault.zoom}
               guess={guess}
               setGuess={setGuess}
-              answer={result ? { lat: round ? result.answer.lat : 0, lon: round ? result.answer.lon : 0 } : null}
+              locked={!!result}                                  // <— NEW: true once a result exists
+              answer={result ? { lat: result.answer.lat, lon: result.answer.lon } : null}
             />
 
             <div className="actions">
-              <button onClick={startRound} className="secondary">New Round</button>
-              <button onClick={onSubmitGuess} disabled={!guess || loading}>Submit Guess</button>
+              {/* New Round always enabled (unless roundLoading) */}
+              <button
+                onClick={startRound}
+                className="secondary"
+                disabled={roundLoading}
+              >
+                New Round
+              </button>
+              <button
+                onClick={onSubmitGuess}
+                disabled={!guess || loading || !!result || roundLoading}
+              >
+                {result ? "Result Shown" : "Submit Guess"}
+              </button>
             </div>
 
             {error && <div className="error">{error}</div>}
@@ -87,7 +117,7 @@ export default function App() {
       </main>
 
       <footer className="container footer">
-        <span>© FindMyCity • Built with FastAPI, React & Leaflet</span>
+        <span>© GeoPersona • Built with FastAPI, React & Leaflet</span>
       </footer>
     </div>
   )

@@ -21,19 +21,21 @@ type Props = {
   defaultZoom: number
   guess: { lat: number, lon: number } | null
   setGuess: (g: { lat: number, lon: number } | null) => void
+  locked: boolean
   answer: { lat: number, lon: number } | null
 }
 
-function ClickHandler({ onClick }: { onClick: (lat: number, lon: number) => void }) {
+function ClickHandler({ onClick, locked }: { onClick: (lat: number, lon: number) => void; locked: boolean }) {
   useMapEvents({
     click(e) {
+      if (locked) return
       onClick(e.latlng.lat, e.latlng.lng)
     }
   })
   return null
 }
 
-export default function MapGuess({ defaultCenter, defaultZoom, guess, setGuess, answer }: Props) {
+export default function MapGuess({ defaultCenter, defaultZoom, guess, setGuess, locked, answer }: Props) {
   const center = useMemo<LatLngExpression>(() => defaultCenter, [defaultCenter])
 
   const linePositions = useMemo(() => {
@@ -46,30 +48,35 @@ export default function MapGuess({ defaultCenter, defaultZoom, guess, setGuess, 
 
   return (
     <div className="map-wrap">
-      <MapContainer center={center} zoom={defaultZoom} scrollWheelZoom className="map">
+      <MapContainer center={center} zoom={defaultZoom} scrollWheelZoom className={`map ${locked ? 'is-locked' : ''}`}>
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>'
           url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
         />
-        <ClickHandler onClick={(lat, lon) => setGuess({ lat, lon })} />
+        <ClickHandler onClick={(lat, lon) => setGuess({ lat, lon })} locked={locked} />
         {guess && (
           <Marker
             position={[guess.lat, guess.lon]}
             icon={defaultIcon}
-            draggable
-            eventHandlers={{
-              dragend: (e) => {
-                const m = e.target as L.Marker
-                const p = m.getLatLng()
-                setGuess({ lat: p.lat, lon: p.lng })
-              }
-            }}
+            draggable={!locked}                         // <— freeze dragging when locked
+            eventHandlers={
+              !locked
+                ? {
+                  dragend: (e) => {
+                    const m = e.target as L.Marker
+                    const p = m.getLatLng()
+                    setGuess({ lat: p.lat, lon: p.lng })
+                  },
+                }
+                : undefined
+            }
           />
         )}
-        {answer && (
+        {locked && answer && (
           <Marker position={[answer.lat, answer.lon]} icon={defaultIcon} />
         )}
-        {linePositions && (
+
+        {locked && answer && guess && linePositions && (
           <Polyline positions={linePositions} />
         )}
       </MapContainer>
