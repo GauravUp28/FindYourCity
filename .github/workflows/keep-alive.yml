@@ -1,0 +1,33 @@
+name: Keep Render Alive
+
+on:
+  schedule:
+    - cron: "*/14 * * * *"   # every 15 minutes (GitHub cron is UTC)
+  workflow_dispatch:          # allow manual runs from the Actions tab
+
+permissions:
+  contents: read
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    env:
+      # Set this in repo Settings → Secrets and variables → Actions → Variables (or Secrets)
+      RENDER_API_URL: ${{ vars.RENDER_API_URL }}
+      # Fallback (optional): hardcode your URL if you prefer not to use a variable
+      FALLBACK_URL: "https://findyourcity.onrender.com/api/health"
+    steps:
+      - name: Resolve URL
+        id: url
+        run: |
+          echo "url=${RENDER_API_URL:-$FALLBACK_URL}" >> $GITHUB_OUTPUT
+
+      - name: Ping health endpoint
+        run: |
+          echo "Pinging: ${{ steps.url.outputs.url }}"
+          # 3 retries, small delay; fail the job if non-2xx
+          curl -A "FindYourCityKeepAlive/1.0 (+github-actions)" \
+               --retry 3 --retry-delay 3 \
+               --silent --show-error --fail \
+               "${{ steps.url.outputs.url }}"
