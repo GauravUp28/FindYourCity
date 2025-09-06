@@ -1,29 +1,36 @@
-// at top with other imports
 import React, { useEffect, useState } from 'react'
-import { newRound, submitGuess } from './api'
-import { NewRound, GuessResult } from './types'
 import MapGuess from './components/MapGuess'
+import { newRound, submitGuess, type GameMode } from './api'
+import { NewRound, GuessResult } from './types'
 
 export default function App() {
+  const [mode, setMode] = useState<GameMode>(() => (localStorage.getItem('mode') as GameMode) || 'offline')
   const [round, setRound] = useState<NewRound | null>(null)
   const [guess, setGuess] = useState<{ lat: number, lon: number } | null>(null)
   const [result, setResult] = useState<GuessResult | null>(null)
   const [loading, setLoading] = useState(false)           // submit-guess loading
-  const [roundLoading, setRoundLoading] = useState(false) // NEW: new-round loading
+  const [roundLoading, setRoundLoading] = useState(false) // new-round loading
   const [error, setError] = useState<string | null>(null)
 
-  const startRound = async () => {
+  // Accept either a GameMode or a MouseEvent, and normalize
+  const startRound = async (arg?: GameMode | React.MouseEvent) => {
+    const selected =
+      arg === 'offline' || arg === 'ai' ? arg : mode; // use explicit mode or current state
+
     setError(null); setResult(null); setGuess(null)
-    setRoundLoading(true)              // <-- start overlay
+    setRoundLoading(true)
     try {
-      const r = await newRound()
+      const r = await newRound(selected)   // <-- always a valid 'offline' | 'ai'
       setRound(r)
     } catch (e: any) {
       setError(e?.message ?? 'Failed to start a round.')
     } finally {
-      setRoundLoading(false)           // <-- stop overlay
+      setRoundLoading(false)
     }
   }
+
+
+  useEffect(() => { startRound() }, []) // first round on load
 
   const onSubmitGuess = async () => {
     if (!round || !guess) return
@@ -38,7 +45,11 @@ export default function App() {
     }
   }
 
-  useEffect(() => { startRound() }, [])
+  const onModeChange = (m: GameMode) => {
+    setMode(m)
+    localStorage.setItem('mode', m)
+    startRound(m)        // pass the mode explicitly
+  }
 
   const anyLoading = roundLoading || loading
 
@@ -55,9 +66,35 @@ export default function App() {
 
       <header className="container">
         <h1>FindYourCity</h1>
-        <p className="tagline">
-          🗺️ Decode the story, drop your pin, test your world sense.
-        </p>
+        <p className="tagline">🗺️ Decode the story, drop your pin, test your world sense.</p>
+
+        {/* Mode toggle */}
+        {/* Mode toggle */}
+        <div className="mode-toggle">
+          <span className="mode-label">Mode:</span>
+          <label className={`pill ${mode === 'offline' ? 'active' : ''}`}>
+            <input
+              type="radio"
+              name="mode"
+              checked={mode === 'offline'}
+              onChange={() => !roundLoading && onModeChange('offline')}
+              disabled={roundLoading}
+            />
+            Offline
+          </label>
+
+          <label className={`pill ${mode === 'ai' ? 'active' : ''}`}>
+            <input
+              type="radio"
+              name="mode"
+              checked={mode === 'ai'}
+              onChange={() => !roundLoading && onModeChange('ai')}
+              disabled={roundLoading}
+            />
+            AI
+          </label>
+
+        </div>
       </header>
 
       <main className={`container ${anyLoading ? 'is-busy' : ''}`}>
@@ -81,14 +118,13 @@ export default function App() {
               defaultZoom={round.mapDefault.zoom}
               guess={guess}
               setGuess={setGuess}
-              locked={!!result}                                  // <— NEW: true once a result exists
+              locked={!!result}
               answer={result ? { lat: result.answer.lat, lon: result.answer.lon } : null}
             />
 
             <div className="actions">
-              {/* New Round always enabled (unless roundLoading) */}
               <button
-                onClick={startRound}
+                onClick={() => startRound()}   // <-- wrap in arrow, no event argument
                 className="secondary"
                 disabled={roundLoading}
               >
@@ -98,7 +134,7 @@ export default function App() {
                 onClick={onSubmitGuess}
                 disabled={!guess || loading || !!result || roundLoading}
               >
-                {result ? "Result Shown" : "Submit Guess"}
+                {result ? 'Result Shown' : 'Submit Guess'}
               </button>
             </div>
 

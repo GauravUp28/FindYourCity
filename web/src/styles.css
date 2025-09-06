@@ -228,3 +228,48 @@ button.secondary {
 .map.is-locked {
   filter: saturate(0.9) brightness(0.96);
 }
+
+/* Toggle pills */
+.mode-toggle {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  flex-wrap: wrap;
+  margin: .5rem 0 1rem;
+}
+
+.mode-toggle .mode-label {
+  opacity: .8;
+  margin-right: .25rem;
+}
+
+.mode-toggle .pill {
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+  padding: .25rem .75rem;
+  border: 1px solid #666;
+  border-radius: 999px;
+  cursor: pointer;
+  user-select: none;
+  font-size: 0.9rem;
+  color: #ccc;
+  /* default text color */
+  background: transparent;
+  /* default background */
+  transition: all 0.2s ease;
+}
+
+.mode-toggle .pill.active {
+  border-color: #4a90e2;
+  /* highlight border */
+  background: #4a90e2;
+  /* highlight background */
+  color: #fff;
+  /* white text when active */
+  font-weight: 600;
+}
+
+.mode-toggle input {
+  display: none;
+}

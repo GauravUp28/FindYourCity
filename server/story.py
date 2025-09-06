@@ -233,7 +233,25 @@ def _pick_from_ai() -> Optional[Dict[str, Any]]:
 # =========================
 # Public API
 # =========================
-def pick_place() -> Dict[str, Any]:
+def pick_place(force_mode: Optional[str] = None) -> Dict[str, Any]:
+    """
+    force_mode:
+      - "offline" => always use local list
+      - "ai"      => try AI (falls back to local on failure)
+      - None      => use env defaults (AI_CITY_MODE + OPENAI_KEY)
+    """
+    mode = (force_mode or "").strip().lower()
+    if mode == "offline":
+        return _pick_from_local()
+
+    if mode == "ai":
+        bundle = _pick_from_ai()
+        if bundle:
+            return bundle
+        print("⚠️ Forced AI mode failed; falling back to local list")
+        return _pick_from_local()
+
+    # default behavior (env-driven)
     if AI_CITY_MODE and OPENAI_KEY:
         bundle = _pick_from_ai()
         if bundle:
