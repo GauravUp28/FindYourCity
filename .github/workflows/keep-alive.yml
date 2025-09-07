@@ -2,7 +2,7 @@ name: Keep Render Alive
 
 on:
   schedule:
-    - cron: "*/14 * * * *"   # every 15 minutes (GitHub cron is UTC)
+    - cron: "*/10 * * * *"   # every 10 minutes (GitHub cron is UTC)
   workflow_dispatch:          # allow manual runs from the Actions tab
 
 permissions:
