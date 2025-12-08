@@ -1,4 +1,4 @@
-# FindYourCity
+# FindYourCity | AI-Powered Geospatial Game
 **FindYourCity** is an interactive, AI-flavored geography guessing game. Players read a fictional character's clues and habits, then drop a pin on the map to guess where they live. 
 
 Live Demo: https://drive.google.com/file/d/1EFqchTAfQFVOQ2VIVkMyFuqeuraTXboy/view?usp=drive_link
