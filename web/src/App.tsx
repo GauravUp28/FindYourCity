@@ -67,7 +67,6 @@ export default function App() {
       <header className="container">
         <h1>FindYourCity</h1>
         <p className="tagline">🗺️ Decode the story, drop your pin, test your world sense.</p>
-
         {/* Mode toggle */}
         {/* Mode toggle */}
         <div className="mode-toggle">
@@ -155,6 +154,14 @@ export default function App() {
 
       <footer className="container footer">
         <span>© FindYourCity • Built with FastAPI, React & Leaflet</span>
+        <a
+          className="footer-link"
+          href="https://github.com/GauravUp28/FindYourCity"
+          target="_blank"
+          rel="noreferrer"
+        >
+          GitHub Repo
+        </a>
       </footer>
     </div>
   )

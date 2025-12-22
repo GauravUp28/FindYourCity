@@ -151,6 +151,27 @@ button.secondary {
   color: var(--muted);
   font-size: 0.9rem;
   padding-bottom: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.footer-link {
+  color: white;
+  text-decoration: none;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 0.9rem;
+  letter-spacing: 0.2px;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.footer-link:hover {
+  border-color: var(--accent);
+  background: rgba(122, 162, 247, 0.12);
 }
 
 /* Full-screen loading overlay */
