@@ -16,6 +16,26 @@ const defaultIcon = new Icon({
   shadowSize: [41, 41],
 })
 
+export type MapStyle = 'satellite' | 'dark' | 'streets'
+
+const MAP_STYLES: Record<MapStyle, { label: string, url: string, attribution: string }> = {
+  satellite: {
+    label: 'Satellite',
+    url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+    attribution: 'Tiles &copy; Esri &mdash; Source: Esri, GeoEye, Earthstar Geographics, CNES/Airbus DS',
+  },
+  dark: {
+    label: 'Dark',
+    url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+    attribution: '&copy; OpenStreetMap &copy; CARTO',
+  },
+  streets: {
+    label: 'Streets',
+    url: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
+    attribution: '&copy; OpenStreetMap &copy; CARTO',
+  }
+}
+
 type Props = {
   defaultCenter: [number, number]
   defaultZoom: number
@@ -23,6 +43,8 @@ type Props = {
   setGuess: (g: { lat: number, lon: number } | null) => void
   locked: boolean
   answer: { lat: number, lon: number } | null
+  mapStyle: MapStyle
+  onStyleChange: (style: MapStyle) => void
 }
 
 function ClickHandler({ onClick, locked }: { onClick: (lat: number, lon: number) => void; locked: boolean }) {
@@ -35,8 +57,9 @@ function ClickHandler({ onClick, locked }: { onClick: (lat: number, lon: number)
   return null
 }
 
-export default function MapGuess({ defaultCenter, defaultZoom, guess, setGuess, locked, answer }: Props) {
+export default function MapGuess({ defaultCenter, defaultZoom, guess, setGuess, locked, answer, mapStyle, onStyleChange }: Props) {
   const center = useMemo<LatLngExpression>(() => defaultCenter, [defaultCenter])
+  const activeStyle = MAP_STYLES[mapStyle]
 
   const linePositions = useMemo(() => {
     if (!answer || !guess) return null
@@ -48,10 +71,29 @@ export default function MapGuess({ defaultCenter, defaultZoom, guess, setGuess, 
 
   return (
     <div className="map-wrap">
+      <div className="map-style-toggle" role="radiogroup" aria-label="Map style">
+        {Object.entries(MAP_STYLES).map(([styleKey, data]) => {
+          const style = styleKey as MapStyle
+          const isActive = style === mapStyle
+          return (
+            <button
+              key={style}
+              type="button"
+              className={`map-style-pill ${isActive ? 'active' : ''}`}
+              aria-pressed={isActive}
+              onClick={() => onStyleChange(style)}
+            >
+              {data.label}
+            </button>
+          )
+        })}
+      </div>
+
       <MapContainer center={center} zoom={defaultZoom} scrollWheelZoom className={`map ${locked ? 'is-locked' : ''}`}>
         <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>'
-          url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+          key={mapStyle}
+          attribution={activeStyle.attribution}
+          url={activeStyle.url}
         />
         <ClickHandler onClick={(lat, lon) => setGuess({ lat, lon })} locked={locked} />
         {guess && (

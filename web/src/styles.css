@@ -86,6 +86,7 @@ header h1 {
 }
 
 .map-wrap {
+  position: relative;
   height: 60vh;
   min-height: 420px;
   border-radius: 12px;
@@ -95,6 +96,43 @@ header h1 {
 
 .map {
   height: 100%;
+}
+
+.map-style-toggle {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: flex;
+  gap: 6px;
+  padding: 6px;
+  border-radius: 999px;
+  background: rgba(3, 6, 20, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+}
+
+.map-style-pill {
+  font-size: 0.85rem;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: #d0d6fd;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.map-style-pill.active {
+  background: #4a90e2;
+  border-color: #4a90e2;
+  color: #fff;
+  font-weight: 600;
+}
+
+.map-style-pill:focus-visible {
+  outline: 2px solid #7aa2f7;
+  outline-offset: 2px;
 }
 
 .actions {

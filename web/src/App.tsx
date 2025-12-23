@@ -1,7 +1,20 @@
 import React, { useEffect, useState } from 'react'
-import MapGuess from './components/MapGuess'
+import MapGuess, { type MapStyle } from './components/MapGuess'
 import { newRound, submitGuess, type GameMode } from './api'
 import { NewRound, GuessResult } from './types'
+
+const MAP_STYLE_DEFAULT: MapStyle = 'satellite'
+
+const resolveStoredMapStyle = (): MapStyle => {
+  try {
+    const stored = localStorage.getItem('mapStyle')
+    return stored === 'satellite' || stored === 'dark' || stored === 'streets'
+      ? stored
+      : MAP_STYLE_DEFAULT
+  } catch {
+    return MAP_STYLE_DEFAULT
+  }
+}
 
 export default function App() {
   const [mode, setMode] = useState<GameMode>(() => (localStorage.getItem('mode') as GameMode) || 'offline')
@@ -11,6 +24,7 @@ export default function App() {
   const [loading, setLoading] = useState(false)           // submit-guess loading
   const [roundLoading, setRoundLoading] = useState(false) // new-round loading
   const [error, setError] = useState<string | null>(null)
+  const [mapStyle, setMapStyle] = useState<MapStyle>(() => resolveStoredMapStyle())
 
   // Accept either a GameMode or a MouseEvent, and normalize
   const startRound = async (arg?: GameMode | React.MouseEvent) => {
@@ -49,6 +63,11 @@ export default function App() {
     setMode(m)
     localStorage.setItem('mode', m)
     startRound(m)        // pass the mode explicitly
+  }
+
+  const onMapStyleChange = (style: MapStyle) => {
+    setMapStyle(style)
+    localStorage.setItem('mapStyle', style)
   }
 
   const anyLoading = roundLoading || loading
@@ -119,6 +138,8 @@ export default function App() {
               setGuess={setGuess}
               locked={!!result}
               answer={result ? { lat: result.answer.lat, lon: result.answer.lon } : null}
+              mapStyle={mapStyle}
+              onStyleChange={onMapStyleChange}
             />
 
             <div className="actions">
