@@ -31,6 +31,14 @@ body {
   padding: 16px;
 }
 
+.app-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.35rem;
+}
+
 header h1 {
   margin: 0;
   font-size: 2.2rem;
@@ -295,6 +303,7 @@ button.secondary {
   gap: .5rem;
   flex-wrap: wrap;
   margin: .5rem 0 1rem;
+  justify-content: center;
 }
 
 .mode-toggle .mode-label {

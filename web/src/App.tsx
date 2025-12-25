@@ -83,7 +83,7 @@ export default function App() {
         </div>
       )}
 
-      <header className="container">
+      <header className="container app-header">
         <h1>FindYourCity</h1>
         <p className="tagline">🗺️ Decode the story, drop your pin, test your world sense.</p>
         {/* Mode toggle */}
