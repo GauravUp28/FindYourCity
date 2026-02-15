@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 
 load_dotenv(dotenv_path=Path(__file__).with_name(".env"), override=True, encoding="utf-8")
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Response
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from typing import Dict, Any, Optional, Literal
@@ -66,6 +66,10 @@ def root():
 @app.get("/api/health")
 def health():
     return {"ok": True}
+
+@app.head("/api/health")
+def health_head():
+    return Response(status_code=200)
 
 @app.post("/api/round", response_model=NewRoundResponse)
 def new_round(body: NewRoundRequest | None = None):
